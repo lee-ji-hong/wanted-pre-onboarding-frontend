@@ -14,12 +14,6 @@ import CssBaseline from '@mui/material/CssBaseline';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
 const SignIn = () => {
-    /*
-    [] - 이메일 기능
-    [] - 이메일 유효성 검사
-    [] - 비밀번호 기능
-    [] - 비밀번호 유효성 검사
-    */
       
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -46,7 +40,7 @@ const SignIn = () => {
                 <VscAccount size="30"/>
               </Avatar>
               <Typography component="h1" variant="h5">
-                Sign in
+                로그인
               </Typography>
               <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                 <TextField
@@ -69,33 +63,23 @@ const SignIn = () => {
                   id="password"
                   autoComplete="current-password"
                 />
-                <FormControlLabel
-                  control={<Checkbox value="remember" color="primary" />}
-                  label="Remember me"
-                />
                 <Button
                   type="submit"
                   fullWidth
                   variant="contained"
                   sx={{ mt: 3, mb: 2 }}
                 >
-                  Sign In
+                  로그인하기
                 </Button>
                 <Grid container>
-                  <Grid item xs>
-                    <Link href="#" variant="body2">
-                      Forgot password?
-                    </Link>
-                  </Grid>
                   <Grid item>
                     <Link href="/signup" variant="body2">
-                      {"Don't have an account? Sign Up"}
+                      {"회원 가입을 진행하시겠어요?"}
                     </Link>
                   </Grid>
                 </Grid>
               </Box>
             </Box>
-            
           </Container>
       );
     
