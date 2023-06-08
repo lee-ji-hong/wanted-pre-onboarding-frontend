@@ -63,7 +63,7 @@ const useHttpRequest = (isLoadingInit = false) => {
           },
           // signal,
         });
-        // console.log(response)
+        console.log(response)
         if (!response.ok) {
           throw Error('Some thing went Error');
         }
