@@ -25,7 +25,7 @@ const SignUp = () => {
     // console.log(responseData)
     if (responseData.success === false) {
       return setEmailError(responseData.errorData.message);
-    }else if(responseData.success === true) {
+    } else if (responseData.success === true) {
       navigate(`/signin`);
       setEmailError('');
       return
@@ -100,6 +100,7 @@ const SignUp = () => {
             name="email"
             autoComplete="email"
             autoFocus
+            data-testid="email-input"
             error={emailError !== '' || false}
           />
           <FormHelperTexts>{emailError}</FormHelperTexts>
@@ -111,12 +112,14 @@ const SignUp = () => {
             label="Password"
             type="password"
             id="password"
+            data-testid="password-input"
             autoComplete="current-password"
             error={passwordError !== '' || false}
           />
           <FormHelperTexts>{passwordError}</FormHelperTexts>
 
           <Button
+            data-testid="signup-button"
             type="submit"
             fullWidth
             variant="contained"

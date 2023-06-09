@@ -1,4 +1,4 @@
-import React, { useState,useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import store from "../../store/localStorage";
 import useHttpRequest from '../../hook/use-http';
@@ -27,7 +27,7 @@ const SignIn = () => {
     console.log(responseData)
     if (responseData.success === false) {
       return setEmailError(responseData.errorData.message);
-    }else if(responseData.success === true) {
+    } else if (responseData.success === true) {
       navigate(`/todo`);
       setEmailError('');
       store.setLocalStorage(responseData.responseData.access_token);
@@ -103,6 +103,7 @@ const SignIn = () => {
             name="email"
             autoComplete="email"
             autoFocus
+            data-testid="email-input"
             error={emailError !== '' || false}
           />
           <FormHelperTexts>{emailError}</FormHelperTexts>
@@ -114,11 +115,13 @@ const SignIn = () => {
             label="Password"
             type="password"
             id="password"
+            data-testid="password-input"
             autoComplete="current-password"
             error={passwordError !== '' || false}
           />
           <FormHelperTexts>{passwordError}</FormHelperTexts>
           <Button
+            data-testid="signin-button"
             type="submit"
             fullWidth
             variant="contained"
