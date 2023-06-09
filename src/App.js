@@ -2,8 +2,8 @@ import { Route, Routes as Switch } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material';
 import './App.css';
 import Layout from './layout/Layout';
-import SignUp from './pages/SignUp';
-import SignIn from './pages/SignIn';
+import SignUpPage from './pages/SignUpPage';
+import SignInPage from './pages/SignInPage';
 
 function App() {
   const theme = createTheme({
@@ -28,9 +28,9 @@ function App() {
       <div className="App">
         <Switch>
           <Route element={<Layout />}>
-            <Route path="/" redirect="/signin" element={<SignIn />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/signin" element={<SignIn />} />
+            <Route path="/" redirect="/signin" element={<SignInPage />} />
+            <Route path="/signup" element={<SignUpPage />} />
+            <Route path="/signin" element={<SignInPage />} />
           </Route>
         </Switch>
       </div>

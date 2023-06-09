@@ -1,9 +1,7 @@
-import React, { useState,useContext } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import store from "../store/localStorage";
-import useHttpRequest from '../hook/use-http';
-import { FormHelperTexts } from '../styles/GlobalStyle';
-
+import useHttpRequest from '../../hook/use-http';
+import { FormHelperTexts } from '../../styles/GlobalStyle';
 
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
@@ -16,7 +14,7 @@ import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import CssBaseline from '@mui/material/CssBaseline';
 
-const SignIn = ({ callback }) => {
+const SignUp = () => {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const { sendPostRequest } = useHttpRequest();
@@ -24,13 +22,12 @@ const SignIn = ({ callback }) => {
 
   //에러처리
   const errorMessage = responseData => {
-    console.log(responseData)
+    // console.log(responseData)
     if (responseData.success === false) {
       return setEmailError(responseData.errorData.message);
     }else if(responseData.success === true) {
-      navigate(`/todo`);
+      navigate(`/signin`);
       setEmailError('');
-      store.setLocalStorage(responseData.responseData.access_token);
       return
     }
   }
@@ -39,7 +36,7 @@ const SignIn = ({ callback }) => {
     const { email, password } = joinData;
 
     await sendPostRequest({
-      endpoint: '/auth/signin',
+      endpoint: '/auth/signup',
       bodyData: {
         email: email,
         password: password
@@ -91,7 +88,7 @@ const SignIn = ({ callback }) => {
           <VscAccount size="30" />
         </Avatar>
         <Typography component="h1" variant="h5">
-          로그인
+          회원가입
         </Typography>
         <Box component="form" onSubmit={validateInput} noValidate sx={{ mt: 1 }}>
           <TextField
@@ -118,26 +115,27 @@ const SignIn = ({ callback }) => {
             error={passwordError !== '' || false}
           />
           <FormHelperTexts>{passwordError}</FormHelperTexts>
+
           <Button
             type="submit"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            로그인하기
+            가입하기
           </Button>
           <Grid container>
             <Grid item>
-              <Link href="/signup" variant="body2">
-                {"회원 가입을 진행하시겠어요?"}
+              <Link href="/signin" variant="body2">
+                {"로그인 페이지로 이동하시겠어요?"}
               </Link>
             </Grid>
           </Grid>
         </Box>
       </Box>
     </Container>
-  );
-
+  )
 }
 
-export default SignIn;
+export default SignUp;
+
