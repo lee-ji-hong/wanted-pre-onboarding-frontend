@@ -7,7 +7,7 @@ const useHttpRequest = (isLoadingInit = false) => {
   const authCtx = useContext(AuthContext);
 
   const sendGetRequest = useCallback(
-    async (endpoint, callback,errorHandler) => {
+    async (endpoint, callback, errorHandler) => {
       const controller = new AbortController();
       const signal = controller.signal;
       const timeout = setTimeout(() => {
@@ -63,13 +63,13 @@ const useHttpRequest = (isLoadingInit = false) => {
           },
           // signal,
         });
-        console.log(response)
+        // console.log(response)
         if (!response.ok) {
+          const errorData = await response.json();
+          callback({ success: false, errorData });
           throw Error('Some thing went Error');
         }
-
-        const responseData = await response.json();
-        callback(responseData);
+        callback({ success: true });
       } catch (err) {
         console.error(err);
       }
