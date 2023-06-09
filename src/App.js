@@ -4,7 +4,7 @@ import './App.css';
 import Layout from './layout/Layout';
 import SignUpPage from './pages/SignUpPage';
 import SignInPage from './pages/SignInPage';
-import ToDoPage from './pages/ToDoPage';
+import TodoPage from './pages/TodoPage';
 
 function App() {
   const theme = createTheme({
@@ -32,7 +32,7 @@ function App() {
             <Route path="/" redirect="/signin" element={<SignInPage />} />
             <Route path="/signup" element={<SignUpPage />} />
             <Route path="/signin" element={<SignInPage />} />
-            <Route path="/todo" element={<ToDoPage />} />
+            <Route path="/todo" element={<TodoPage />} />
           </Route>
         </Switch>
       </div>

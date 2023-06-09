@@ -1,5 +1,6 @@
 import { useState, useContext, useCallback } from 'react';
 import { BACKEND_BASE_URL } from '../global_variables';
+import store from '../store/localStorage';
 import AuthContext from '../store/auth-context';
 
 const useHttpRequest = (isLoadingInit = false) => {
@@ -17,10 +18,10 @@ const useHttpRequest = (isLoadingInit = false) => {
       setIsLoading(true);
       try {
         let response;
-        if (authCtx.token) {
+        if (store.getLocalStorage('item')) {
           response = await fetch(`${BACKEND_BASE_URL}${endpoint}`, {
             headers: {
-              Authorization: 'Bearer ' + authCtx.token,
+              Authorization: 'Bearer ' + store.getLocalStorage('item'),
             },
             signal,
           });
@@ -67,7 +68,7 @@ const useHttpRequest = (isLoadingInit = false) => {
       }
       // clearTimeout(timeout);
     },
-    [authCtx.token]
+    []
   );
 
   const sendPostRequest = useCallback(
@@ -85,7 +86,7 @@ const useHttpRequest = (isLoadingInit = false) => {
           body: JSON.stringify(bodyData),
           headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + authCtx.token,
+            Authorization: 'Bearer ' + store.getLocalStorage('item'),
           },
           // signal,
         });
@@ -103,7 +104,7 @@ const useHttpRequest = (isLoadingInit = false) => {
       }
       // clearTimeout(timeout);
     },
-    [authCtx.token]
+    [store.getLocalStorage('item')]
   );
 
   const sendPostFileRequest = useCallback(
