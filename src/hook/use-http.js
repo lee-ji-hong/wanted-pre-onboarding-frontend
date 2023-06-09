@@ -69,7 +69,8 @@ const useHttpRequest = (isLoadingInit = false) => {
           callback({ success: false, errorData });
           throw Error('Some thing went Error');
         }
-        callback({ success: true });
+        const responseData = await response.json();
+        callback({ success: true, responseData });
       } catch (err) {
         console.error(err);
       }
