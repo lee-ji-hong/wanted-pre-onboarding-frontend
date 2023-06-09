@@ -17,7 +17,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 const SignUp = () => {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
-  const { sendPostRequest } = useHttpRequest();
+  const { sendPostSignupRequest } = useHttpRequest();
   const navigate = useNavigate();
 
   //에러처리
@@ -35,7 +35,7 @@ const SignUp = () => {
   const handleSubmit = async (joinData) => {
     const { email, password } = joinData;
 
-    await sendPostRequest({
+    await sendPostSignupRequest({
       endpoint: '/auth/signup',
       bodyData: {
         email: email,

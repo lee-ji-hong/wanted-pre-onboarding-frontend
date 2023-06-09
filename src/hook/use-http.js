@@ -43,6 +43,32 @@ const useHttpRequest = (isLoadingInit = false) => {
     },
     [authCtx.token]
   );
+  const sendPostSignupRequest = useCallback(
+    async (requestOption, callback = () => { }) => {
+
+      const { endpoint, bodyData } = requestOption;
+      try {
+        const response = await fetch(`${BACKEND_BASE_URL}${endpoint}`, {
+          method: 'POST',
+          body: JSON.stringify(bodyData),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          // signal,
+        });
+        if (!response.ok) {
+          const errorData = await response.json();
+          callback({ success: false, errorData });
+          throw Error('Some thing went Error');
+        }
+        callback({ success: true });
+      } catch (err) {
+        console.error(err);
+      }
+      // clearTimeout(timeout);
+    },
+    [authCtx.token]
+  );
 
   const sendPostRequest = useCallback(
     async (requestOption, callback = () => { }) => {
@@ -71,6 +97,7 @@ const useHttpRequest = (isLoadingInit = false) => {
         }
         const responseData = await response.json();
         callback({ success: true, responseData });
+
       } catch (err) {
         console.error(err);
       }
@@ -171,7 +198,7 @@ const useHttpRequest = (isLoadingInit = false) => {
     [authCtx.token]
   );
 
-  return { isLoading, sendGetRequest, sendPostRequest, sendPostFileRequest, sendPutRequest, sendDelRequest };
+  return { isLoading, sendGetRequest, sendPostRequest, sendPostSignupRequest, sendPostFileRequest, sendPutRequest, sendDelRequest };
 };
 
 export default useHttpRequest;
