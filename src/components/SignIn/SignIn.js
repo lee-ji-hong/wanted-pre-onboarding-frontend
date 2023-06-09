@@ -1,5 +1,6 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { VscAccount } from "react-icons/vsc";
 import store from "../../store/localStorage";
 import useHttpRequest from '../../hook/use-http';
 import { FormHelperTexts } from '../../styles/GlobalStyle';
@@ -10,7 +11,6 @@ import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-import { VscAccount } from "react-icons/vsc";
 import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
@@ -19,9 +19,10 @@ import CssBaseline from '@mui/material/CssBaseline';
 const SignIn = () => {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [inputs, setInputs] = useState({ email: '', password: '' });
   const { sendPostRequest } = useHttpRequest();
   const navigate = useNavigate();
-
+  console.log(inputs)
   //에러처리
   const errorMessage = responseData => {
     console.log(responseData)
@@ -35,42 +36,37 @@ const SignIn = () => {
     }
   }
 
-  const handleSubmit = async (joinData) => {
-    const { email, password } = joinData;
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
     await sendPostRequest({
       endpoint: '/auth/signin',
       bodyData: {
-        email: email,
-        password: password
+        email: inputs.email,
+        password: inputs.password
       },
     }, (response) => {
       errorMessage(response);
     })
   }
 
-  const validateInput = async (event) => {
+  const validateInput = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const joinData = {
-      email: data.get('email'),
-      password: data.get('password')
-    }
-    const { email, password } = joinData;
+    const { value, id: targetId } = event.target;
+    setInputs((prevState) => { return { ...prevState, [targetId]: value } });
 
     //이메일 유효성 체크
-    const emailRegex = /([\w-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
-    if (!emailRegex.test(email)) setEmailError('올바른 이메일 형식이 아닙니다.');
-    else setEmailError('');
+    if (targetId === "email") {
+      const emailRegex = /([\w-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+      if (!emailRegex.test(value)) setEmailError('올바른 이메일 형식이 아닙니다.');
+      else setEmailError('');
+    }
 
     // 비밀번호 유효성 체크
-    const passwordRegex = /^.{8,}$/;
-    if (!passwordRegex.test(password))
-      setPasswordError('8자리 이상 입력해주세요!');
-    else setPasswordError('');
-
-    if (emailRegex.test(email) && passwordRegex.test(password)) {
-      handleSubmit(joinData);
+    if (targetId === "password") {
+      const passwordRegex = /^.{8,}$/;
+      if (!passwordRegex.test(value)) setPasswordError('8자리 이상 입력해주세요!');
+      else setPasswordError('');
     }
 
   };
@@ -93,7 +89,7 @@ const SignIn = () => {
         <Typography component="h1" variant="h5">
           로그인
         </Typography>
-        <Box component="form" onSubmit={validateInput} noValidate sx={{ mt: 1 }}>
+        <Box component="form" noValidate sx={{ mt: 1 }}>
           <TextField
             margin="normal"
             required
@@ -105,6 +101,7 @@ const SignIn = () => {
             autoFocus
             data-testid="email-input"
             error={emailError !== '' || false}
+            onChange={validateInput}
           />
           <FormHelperTexts>{emailError}</FormHelperTexts>
           <TextField
@@ -118,6 +115,7 @@ const SignIn = () => {
             data-testid="password-input"
             autoComplete="current-password"
             error={passwordError !== '' || false}
+            onChange={validateInput}
           />
           <FormHelperTexts>{passwordError}</FormHelperTexts>
           <Button
@@ -126,6 +124,8 @@ const SignIn = () => {
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
+            onClick={handleSubmit}
+            disabled={emailError === '' && passwordError === '' && inputs.email !== '' && inputs.password !== '' ? false : true}
           >
             로그인하기
           </Button>
