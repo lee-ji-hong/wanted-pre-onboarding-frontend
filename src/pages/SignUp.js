@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import useHttpRequest from '../hook/use-http';
+import { FormHelperTexts } from '../styles/GlobalStyle';
 
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
@@ -13,37 +15,61 @@ import Typography from '@mui/material/Typography';
 import CssBaseline from '@mui/material/CssBaseline';
 
 const SignUp = () => {
-
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
   const { sendPostRequest } = useHttpRequest();
+  const navigate = useNavigate();
 
   //에러처리
   const errorMessage = responseData => {
-    console.log(responseData)
+    // console.log(responseData)
     if (responseData.success === false) {
-      console.log('통고ㅏ')
-      return
-      // return setSnackbar({ children: responseData.error.errorMessage, severity: 'error' });
-    } else {
-      console.log('실패')
-      // setSnackbar({ children: '처리 완료되었습니다.', severity: 'success' });
+      return setEmailError(responseData.errorData.message);
+    }else if(responseData.success === true) {
+      navigate(`/signin`);
+      setEmailError('');
       return
     }
   }
 
+  const handleSubmit = async (joinData) => {
+    const { email, password } = joinData;
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
     await sendPostRequest({
       endpoint: '/auth/signup',
       bodyData: {
-        email: data.get('email'),
-        password: data.get('password'),
+        email: email,
+        password: password
       },
     }, (response) => {
-      console.log(response)
       errorMessage(response);
     })
+  }
+
+  const validateInput = async (event) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const joinData = {
+      email: data.get('email'),
+      password: data.get('password')
+    }
+    const { email, password } = joinData;
+
+    //이메일 유효성 체크
+    const emailRegex = /([\w-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+    if (!emailRegex.test(email)) setEmailError('올바른 이메일 형식이 아닙니다.');
+    else setEmailError('');
+
+    // 비밀번호 유효성 체크
+    const passwordRegex = /^.{8,}$/;
+    if (!passwordRegex.test(password))
+      setPasswordError('8자리 이상 입력해주세요!');
+    else setPasswordError('');
+
+    if (emailRegex.test(email) && passwordRegex.test(password)) {
+      handleSubmit(joinData);
+    }
+
   };
 
   return (
@@ -64,7 +90,7 @@ const SignUp = () => {
         <Typography component="h1" variant="h5">
           회원가입
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+        <Box component="form" onSubmit={validateInput} noValidate sx={{ mt: 1 }}>
           <TextField
             margin="normal"
             required
@@ -74,7 +100,9 @@ const SignUp = () => {
             name="email"
             autoComplete="email"
             autoFocus
+            error={emailError !== '' || false}
           />
+          <FormHelperTexts>{emailError}</FormHelperTexts>
           <TextField
             margin="normal"
             required
@@ -84,7 +112,9 @@ const SignUp = () => {
             type="password"
             id="password"
             autoComplete="current-password"
+            error={passwordError !== '' || false}
           />
+          <FormHelperTexts>{passwordError}</FormHelperTexts>
 
           <Button
             type="submit"
