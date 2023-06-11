@@ -107,33 +107,6 @@ const useHttpRequest = (isLoadingInit = false) => {
     [store.getLocalStorage('item')]
   );
 
-  const sendPostFileRequest = useCallback(
-    async (requestOption, callback = () => { }) => {
-      const { endpoint, bodyData } = requestOption;
-      try {
-        const response = await fetch(`${BACKEND_BASE_URL}${endpoint}`, {
-          method: 'POST',
-          body: bodyData,
-          headers: {
-            Authorization: 'Bearer ' + authCtx.token,
-          },
-          // signal,
-        });
-        console.log(response)
-        if (!response.ok) {
-          throw Error('Some thing went Error');
-        }
-
-        const responseData = await response.json();
-        callback(responseData);
-      } catch (err) {
-        console.error(err);
-      }
-      // clearTimeout(timeout);
-    },
-    [authCtx.token]
-  );
-
   const sendPutRequest = useCallback(
     async (requestOption, callback = () => { }) => {
       const { endpoint, bodyData } = requestOption;
@@ -148,7 +121,7 @@ const useHttpRequest = (isLoadingInit = false) => {
           body: JSON.stringify(bodyData),
           headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + authCtx.token,
+            Authorization: 'Bearer ' + store.getLocalStorage('item'),
           },
           signal,
         });
@@ -164,7 +137,7 @@ const useHttpRequest = (isLoadingInit = false) => {
       }
       clearTimeout(timeout);
     },
-    [authCtx.token]
+    [store.getLocalStorage('item')]
   );
 
   const sendDelRequest = useCallback(
@@ -199,7 +172,7 @@ const useHttpRequest = (isLoadingInit = false) => {
     [authCtx.token]
   );
 
-  return { isLoading, sendGetRequest, sendPostRequest, sendPostSignupRequest, sendPostFileRequest, sendPutRequest, sendDelRequest };
+  return { isLoading, sendGetRequest, sendPostRequest, sendPostSignupRequest, sendPutRequest, sendDelRequest };
 };
 
 export default useHttpRequest;
