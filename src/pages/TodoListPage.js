@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import store from '../store/localStorage';
 import TodoList from '../components/Todo/TodoList';
-const TodoPage = () => {
+const TodoListPage = () => {
   const navigate = useNavigate();
   useEffect(() => {
     if (!store.getLocalStorage('item')) {
@@ -14,4 +14,4 @@ const TodoPage = () => {
   );
 }
 
-export default TodoPage;
+export default TodoListPage;
