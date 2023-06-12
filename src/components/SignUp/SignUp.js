@@ -54,7 +54,7 @@ const SignUp = () => {
 
     //이메일 유효성 체크
     if (targetId === "email") {
-      const emailRegex = /([\w-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+      const emailRegex = /@/;
       if (!emailRegex.test(value)) setEmailError('올바른 이메일 형식이 아닙니다.');
       else setEmailError('');
     }

@@ -22,10 +22,10 @@ const SignIn = () => {
   const [inputs, setInputs] = useState({ email: '', password: '' });
   const { sendPostRequest } = useHttpRequest();
   const navigate = useNavigate();
-  console.log(inputs)
+  // console.log(inputs)
   //에러처리
   const errorMessage = responseData => {
-    console.log(responseData)
+    // console.log(responseData)
     if (responseData.success === false) {
       return setEmailError(responseData.errorData.message);
     } else if (responseData.success === true) {
@@ -57,7 +57,7 @@ const SignIn = () => {
 
     //이메일 유효성 체크
     if (targetId === "email") {
-      const emailRegex = /([\w-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+      const emailRegex = /@/;
       if (!emailRegex.test(value)) setEmailError('올바른 이메일 형식이 아닙니다.');
       else setEmailError('');
     }
