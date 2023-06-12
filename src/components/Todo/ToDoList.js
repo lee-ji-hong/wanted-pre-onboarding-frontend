@@ -5,24 +5,29 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { Box } from '@mui/system';
 import { Grid, List, Checkbox, ListItem, ListItemButton, ListItemIcon, ListItemText, TextField, Typography } from '@mui/material';
 import { Button } from '@mui/material';
+
 const TodoList = () => {
-  const [todo, setTodo] = useState(-1);
+  const [todo, setTodo] = useState('');
+  const [editTodo, setEditTodo] = useState('');
   const [todoList, setTodoList] = useState([]);
   const [editIndex, setEditIndex] = useState(-1);
-  const [checked, setChecked] = React.useState(false);
+  const [checked, setChecked] = useState(false);
   const { sendGetRequest, sendPostRequest, sendPutRequest, sendDelRequest } = useHttpRequest();
 
-
+  console.log(editTodo)
   const handleToggle = (value) => {
-    console.log(value, !value)
-    setChecked(!value)
+    setChecked(!value);
   };
 
-  const onChange = async (event) => {
+  const onChange = (event) => {
     event.preventDefault();
     setTodo(event.target.value);
-    console.log(event.target.value)
-  }
+  };
+
+  const onEditChange = (event) => {
+    event.preventDefault();
+    setEditTodo(event.target.value);
+  };
 
   const addItem = async () => {
     await sendPostRequest({
@@ -31,50 +36,56 @@ const TodoList = () => {
         todo: todo,
       },
     }, (response) => {
-      console.log(response)
+      console.log(response);
       // errorMessage(response);
-    })
-    setTodo('')
-  }
+    });
+    setTodo('');
+    sendGetRequest(`/todos`, (data) => {
+      setTodoList(data);
+    });
+  };
 
   const handleEditSubmit = async (target) => {
-    console.log(todo)
+    console.log(editTodo);
     await sendPutRequest({
       endpoint: `/todos/${target.id}`,
       bodyData: {
-        todo: todo,
-        isCompleted: checked
+        todo: editTodo,
+        isCompleted: checked,
       },
     }, (response) => {
-      console.log(response)
+      console.log(response);
       // errorMessage(response);
-    })
-    setTodo('')
-  }
+    });
+    setEditIndex(-1);
+    setEditTodo('');
+    sendGetRequest(`/todos`, (data) => {
+      setTodoList(data);
+    });
+  };
 
   const handleEditCancel = () => {
-    setEditIndex(''); // Disable the edit mode
-    setTodo('')
+    setEditIndex(-1);
+    setEditTodo('');
   };
 
   const handleDelete = async (target) => {
-    console.log(todo)
     await sendDelRequest({
       endpoint: `/todos/${target}`,
     }, (response) => {
-      console.log(response)
+      console.log(response);
       // errorMessage(response);
-    })
-    setTodo('')
+    });
+    sendGetRequest(`/todos`, (data) => {
+      setTodoList(data);
+    });
   };
 
   useEffect(() => {
-    const getTodo = data => {
-      setTodoList(data)
-      console.log(data)
-    }
-    sendGetRequest(`/todos`, getTodo);
-  }, [setTodo]);
+    sendGetRequest(`/todos`, (data) => {
+      setTodoList(data);
+    });
+  }, []);
 
   return (
     <Container>
@@ -104,6 +115,7 @@ const TodoList = () => {
               autoFocus
               data-testid="new-todo-input"
               onChange={onChange}
+              value={todo}
             />
           </Grid>
           <Grid item xs={4}>
@@ -122,35 +134,36 @@ const TodoList = () => {
 
         {todoList.length > 0 && (
           <List sx={{ margin: '0 auto', width: '100%' }}>
-            {todoList.map((todo, index) => {
+            {todoList.map((todoItem) => {
               return (
-                <ListItem
-                  key={todo.id}
-                  disablePadding
-                >
-                  {editIndex === todo.id ? (
+                <ListItem key={todoItem.id} disablePadding>
+                  {editIndex === todoItem.id ? (
                     <ListItemButton>
                       <ListItemIcon>
-                        <Checkbox onClick={() => handleToggle(todo.isCompleted)} />
+                        <Checkbox onClick={() => handleToggle(todoItem.isCompleted)} />
                       </ListItemIcon>
-                      <input data-testid="modify-input" onChange={onChange} />
-                      <Button data-testid="submit-button" onClick={() => handleEditSubmit(todo)}>제출</Button>
-                      <Button data-testid="cancel-button" onClick={() => handleEditCancel}>취소</Button>
+                      <input
+                        data-testid="modify-input"
+                        onChange={onEditChange}
+                        value={editTodo}
+                      />
+                      <Button data-testid="submit-button" onClick={() => handleEditSubmit(todoItem)}>제출</Button>
+                      <Button data-testid="cancel-button" onClick={handleEditCancel}>취소</Button>
                     </ListItemButton>
                   ) : (
                     <>
                       <ListItemButton dense>
                         <ListItemIcon>
-                          <Checkbox onClick={() => handleToggle(todo.isCompleted)} />
+                          <Checkbox onClick={() => handleToggle(todoItem.isCompleted)} />
                         </ListItemIcon>
-                        <ListItemText id={todo.id} primary={todo.todo} />
+                        <ListItemText id={todoItem.id} primary={todoItem.todo} />
                       </ListItemButton>
-                      <Button data-testid="modify-button" onClick={() => setEditIndex(todo.id)}>수정</Button>
-                      <Button data-testid="delete-button" onClick={() => handleDelete(todo.id)}>삭제</Button>
+                      <Button data-testid="modify-button" onClick={() => setEditIndex(todoItem.id)}>수정</Button>
+                      <Button data-testid="delete-button" onClick={() => handleDelete(todoItem.id)}>삭제</Button>
                     </>
                   )}
                 </ListItem>
-              )
+              );
             })}
           </List>
         )}
@@ -160,6 +173,6 @@ const TodoList = () => {
       </Box>
     </Container>
   );
-}
+};
 
 export default TodoList;
