@@ -1,4 +1,6 @@
-# Getting Started with Create React App
+# 이지홍
+# 데모 영상
+# 실행 방법
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
