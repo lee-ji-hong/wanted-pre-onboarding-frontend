@@ -6,7 +6,7 @@ import { Box } from '@mui/system';
 import { Grid, List, Checkbox, ListItem, ListItemButton, ListItemIcon, ListItemText, TextField, Typography } from '@mui/material';
 import { Button } from '@mui/material';
 
-const TodoList = () => {
+const TodoListItem = () => {
   const [todo, setTodo] = useState('');
   const [editTodo, setEditTodo] = useState('');
   const [todoList, setTodoList] = useState([]);
@@ -175,4 +175,4 @@ const TodoList = () => {
   );
 };
 
-export default TodoList;
+export default TodoListItem;
