@@ -154,22 +154,23 @@ const useHttpRequest = (isLoadingInit = false) => {
           body: JSON.stringify(bodyData),
           headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + authCtx.token,
+            Authorization: 'Bearer ' + store.getLocalStorage('item'),
           },
           signal,
         });
 
         if (!response.ok) {
+          const errorData = await response.json();
+          callback({ success: false, errorData });
           throw Error('Some thing went Error');
         }
-        const responseData = await response.json();
-        callback(responseData);
+        callback({ success: true });
       } catch (err) {
         console.error(err);
       }
       clearTimeout(timeout);
     },
-    [authCtx.token]
+    [store.getLocalStorage('item')]
   );
 
   return { isLoading, sendGetRequest, sendPostRequest, sendPostSignupRequest, sendPutRequest, sendDelRequest };

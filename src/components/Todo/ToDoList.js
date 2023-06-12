@@ -10,7 +10,7 @@ const TodoList = () => {
   const [todoList, setTodoList] = useState([]);
   const [editIndex, setEditIndex] = useState(-1);
   const [checked, setChecked] = React.useState(false);
-  const { sendGetRequest, sendPostRequest, sendPutRequest } = useHttpRequest();
+  const { sendGetRequest, sendPostRequest, sendPutRequest, sendDelRequest } = useHttpRequest();
 
 
   const handleToggle = (value) => {
@@ -54,6 +54,17 @@ const TodoList = () => {
 
   const handleEditCancel = () => {
     setEditIndex(''); // Disable the edit mode
+    setTodo('')
+  };
+
+  const handleDelete = async (target) => {
+    console.log(todo)
+    await sendDelRequest({
+      endpoint: `/todos/${target}`,
+    }, (response) => {
+      console.log(response)
+      // errorMessage(response);
+    })
     setTodo('')
   };
 
@@ -135,7 +146,7 @@ const TodoList = () => {
                         <ListItemText id={todo.id} primary={todo.todo} />
                       </ListItemButton>
                       <Button data-testid="modify-button" onClick={() => setEditIndex(todo.id)}>수정</Button>
-                      <Button>삭제</Button>
+                      <Button data-testid="delete-button" onClick={() => handleDelete(todo.id)}>삭제</Button>
                     </>
                   )}
                 </ListItem>
