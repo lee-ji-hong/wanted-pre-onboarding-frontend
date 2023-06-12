@@ -1,5 +1,7 @@
 # 이지홍
-# 데모 영상
+# 배포 링크
+https://wanted-pre-onboarding-frontend-hong.netlify.app/
+
 # 실행 방법
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
