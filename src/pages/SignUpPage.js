@@ -7,7 +7,7 @@ const SignUpPage = () => {
   const navigate = useNavigate();
   useEffect(() => {
     if (store.getLocalStorage('item')) {
-      navigate(`/todo`);
+      navigate(`/`);
       console.log('로컬스토리지 있음')
     }
   }, []);

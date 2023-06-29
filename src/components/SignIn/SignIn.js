@@ -1,75 +1,30 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { VscAccount } from "react-icons/vsc";
-import store from "../../store/localStorage";
-import useHttpRequest from '../../hook/use-http';
-import { FormHelperTexts } from '../../styles/GlobalStyle';
 
+import {Box,Link,Grid,Container,CssBaseline} from '@mui/material';
 
-import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
-import CssBaseline from '@mui/material/CssBaseline';
+import MemberForm from '../UI/MemberForm';
+import CustomButton from '../UI/CustomButton';
 
 const SignIn = () => {
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const [inputs, setInputs] = useState({ email: '', password: '' });
-  const { sendPostRequest } = useHttpRequest();
-  const navigate = useNavigate();
-  // console.log(inputs)
-  //에러처리
-  const errorMessage = responseData => {
-    // console.log(responseData)
-    if (responseData.success === false) {
-      return setEmailError(responseData.errorData.message);
-    } else if (responseData.success === true) {
-      navigate(`/todo`);
-      setEmailError('');
-      store.setLocalStorage(responseData.responseData.access_token);
-      return
-    }
-  }
+  const [errors, setErrors] = useState({ id: '', password: '' });
+  const [inputs, setInputs] = useState({ id: '', password: '' });
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  console.log(inputs)
 
-    await sendPostRequest({
-      endpoint: '/auth/signin',
-      bodyData: {
-        email: inputs.email,
-        password: inputs.password
-      },
-    }, (response) => {
-      errorMessage(response);
-    })
-  }
-
-  const validateInput = (event) => {
-    event.preventDefault();
-    const { value, id: targetId } = event.target;
-    setInputs((prevState) => { return { ...prevState, [targetId]: value } });
-
-    //이메일 유효성 체크
-    if (targetId === "email") {
-      const emailRegex = /@/;
-      if (!emailRegex.test(value)) setEmailError('올바른 이메일 형식이 아닙니다.');
-      else setEmailError('');
-    }
-
-    // 비밀번호 유효성 체크
-    if (targetId === "password") {
-      const passwordRegex = /^.{8,}$/;
-      if (!passwordRegex.test(value)) setPasswordError('8자리 이상 입력해주세요!');
-      else setPasswordError('');
-    }
-
-  };
+  const inputFields = [
+    {
+      id: 'id',
+      label: '아이디(이메일)',
+      autoComplete: 'id',
+      type: 'text',
+    },
+    {
+      id: 'password',
+      label: '비밀번호',
+      autoComplete: 'current-password',
+      type: 'password',
+    },
+  ];
 
   return (
 
@@ -83,52 +38,19 @@ const SignIn = () => {
           alignItems: 'center',
         }}
       >
-        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-          <VscAccount size="30" />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          로그인
-        </Typography>
-        <Box component="form" noValidate sx={{ mt: 1 }}>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-            data-testid="email-input"
-            error={emailError !== '' || false}
-            onChange={validateInput}
-          />
-          <FormHelperTexts>{emailError}</FormHelperTexts>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            data-testid="password-input"
-            autoComplete="current-password"
-            error={passwordError !== '' || false}
-            onChange={validateInput}
-          />
-          <FormHelperTexts>{passwordError}</FormHelperTexts>
-          <Button
-            data-testid="signin-button"
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-            onClick={handleSubmit}
-            disabled={emailError === '' && passwordError === '' && inputs.email !== '' && inputs.password !== '' ? false : true}
-          >
-            로그인하기
-          </Button>
+        <MemberForm
+          errors={errors}
+          setErrors={setErrors}
+          setInputs={setInputs}
+          inputFields={inputFields}
+        />
+        <CustomButton
+        label="로그인하기"
+        inputs={inputs}
+        errors={errors}
+        setErrors={setErrors}
+        disabled={errors.id === '' && errors.password === '' && inputs.email !== '' && inputs.password !== '' ? false : true}
+        />
           <Grid container>
             <Grid item>
               <Link href="/signup" variant="body2">
@@ -136,7 +58,6 @@ const SignIn = () => {
               </Link>
             </Grid>
           </Grid>
-        </Box>
       </Box>
     </Container>
   );

@@ -23,10 +23,10 @@ export const AuthContextProvider = props => {
   const [loginModalOpened, setLoginModalOpened] = useState(false);
   const userIsLoggedIn = !!token;
 
-  const loginHandler = async (username, password) => {
+  const loginHandler = async (id, password) => {
     try {
       const loginData = {
-        username: username,
+        id: id,
         password: password,
       };
       const response = await fetch(`${BACKEND_BASE_URL}/users/login`, {
