@@ -4,11 +4,13 @@ import store from '../store/localStorage';
 import TodoList from '../components/Todo/TodoList';
 const TodoPage = () => {
   const navigate = useNavigate();
-  useEffect(() => {
-    if (!store.getLocalStorage('item')) {
-      navigate(`/signin`);
-    }
-  }, []);
+
+  // useEffect(() => {
+  //   if (!store.getLocalStorage('item')) {
+  //     navigate(`/signin`);
+  //   }
+  // }, []);
+
   return (
     <TodoList />
   );

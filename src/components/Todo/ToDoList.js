@@ -1,18 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import useHttpRequest from '../../hook/use-http';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import { Box } from '@mui/system';
 import { Grid, List, Checkbox, ListItem, ListItemButton, ListItemIcon, ListItemText, TextField, Typography } from '@mui/material';
 import { Button } from '@mui/material';
+import AuthContext from '../../store/auth-context';
 
-const TodoList = () => {
+const TodoList = ({callback}) => {
   const [todo, setTodo] = useState('');
   const [editTodo, setEditTodo] = useState('');
   const [todoList, setTodoList] = useState([]);
   const [editIndex, setEditIndex] = useState(-1);
   const [checked, setChecked] = useState(false);
   const { sendGetRequest, sendPostRequest, sendPutRequest, sendDelRequest } = useHttpRequest();
+  const authCtx = useContext(AuthContext);
 
   console.log(editTodo)
   const handleToggle = (value) => {
@@ -81,10 +83,52 @@ const TodoList = () => {
     });
   };
 
+  const handleSubmitLogin = (token) => {
+    // event.preventDefault();
+    authCtx
+      .socialLogin('/users/signup/oauth', token, 'NAVER')
+      .then(data => {
+        if (data.error) {
+          throw new Error();
+        } else if (data.success === false) {
+          alert('인증정보가 올바르지 않습니다.');
+          return;
+        } else {
+          if (callback) {
+            callback();
+            return
+          }
+          return;
+        }
+      })
+      .catch(event => {
+        alert('인증이 실패했거나 오류가 발생했습니다!');
+      });
+    return;
+  };
+
+
+
+  const userAccessToken = () => {
+    if (window.location.href.includes('access_token')) {
+      getToken();
+    }
+  }
+
+  const getToken = () => {
+    const token = window.location.href.split('=')[1].split('&')[0]
+    localStorage.setItem('access_token', token)
+    handleSubmitLogin(token)
+  }
+
   useEffect(() => {
     sendGetRequest(`/todos`, (data) => {
       setTodoList(data);
     });
+  }, []);
+
+  useEffect(() => {
+    userAccessToken();
   }, []);
 
   return (

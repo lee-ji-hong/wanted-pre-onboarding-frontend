@@ -4,11 +4,14 @@ import { Box, Divider, Link, Grid, Container, Typography, CssBaseline } from '@m
 
 import MemberForm from '../UI/MemberForm';
 import CustomButton from '../UI/CustomButton';
+import NaverLogin from '../NaverLogin';
+import KakaoLogin from '../KakaoLogin';
 
 const SignUp = () => {
   const [errors, setErrors] = useState({ id: '', password: '', name: '', phoneNumber: '' });
   const [inputs, setInputs] = useState({ id: '', password: '', name: '', phoneNumber: '' });
-
+  const [userInfo, setUserInfo] = useState(null);
+  const [getToken, setGetToken] = useState(null);
   console.log(inputs)
 
   const inputFields = [
@@ -52,11 +55,18 @@ const SignUp = () => {
       >
         <Typography color="#ACB3BF">SNS계정으로 간편하게 회원가입</Typography>
         <Grid container p="20px">
-          {['google', 'kakaotalk', 'naver'].map((image) => (
-            <Grid key={image} item xs={4}>
-              <img alt={image} src={`./${image}.png`} />
-            </Grid>
-          ))}
+          <Grid item xs={4}>
+            <img alt="구글로그인" src={`./google.png`} style={{ height: '48px' }} />
+          </Grid>
+          <Grid item xs={4}>
+            <NaverLogin
+              userInfo={userInfo}
+              setUserInfo={setUserInfo}
+              setGetToken={setGetToken} />
+          </Grid>
+          <Grid item xs={4}>
+            <KakaoLogin />
+          </Grid>
         </Grid>
         <Divider width="100%" />
         <br />

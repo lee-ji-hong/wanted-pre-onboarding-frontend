@@ -9,6 +9,7 @@ const AuthContext = React.createContext({
   loginModalOpened: false,
   login: () => { },
   logout: () => { },
+  socialLogin: () => { },
   toggleLoginModal: () => { },
 });
 
@@ -22,6 +23,48 @@ export const AuthContextProvider = props => {
   const [refreshToken, setRefreshToken] = useState(initialReftoken);
   const [loginModalOpened, setLoginModalOpened] = useState(false);
   const userIsLoggedIn = !!token;
+
+  const socialLoginHandler = async (endpoint, accessToken, type) => {
+    try {
+      const socialLoginData = {
+        accessToken: accessToken,
+        type: type,
+      };
+      const response = await fetch(`${BACKEND_BASE_URL}${endpoint}`, {
+        method: 'POST',
+        body: JSON.stringify(socialLoginData),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        throw new Error();
+      }
+      const tokenData = await response.json();
+      if (tokenData.success) {
+        console.log(tokenData)
+        const accessToken = tokenData.data.result.accessToken;
+        const refreshToken = tokenData.data.result.refreshToken;
+        const expires = new Date();
+        expires.setUTCDate(expires.setUTCDate() + 14);
+        setCookie('usertoken', accessToken, {
+          path: '/',
+          expires: expires,
+        });
+        setCookie('refreshtoken', refreshToken, {
+          path: '/',
+          expires: expires
+        });
+        setToken(accessToken);
+        setRefreshToken(refreshToken);
+        return { error: false, success: true };
+      } else {
+        return { error: false, success: false };
+      }
+    } catch (e) {
+      return { error: true, success: false };
+    }
+  };
 
   const loginHandler = async (id, password) => {
     try {
@@ -105,6 +148,7 @@ export const AuthContextProvider = props => {
     loginModalOpened: loginModalOpened,
     login: loginHandler,
     oAuthLogin: oAuthLoginhandler,
+    socialLogin: socialLoginHandler,
     logout: logoutHandler,
     toggleLoginModal: toggleLoginModalHandler,
   };
