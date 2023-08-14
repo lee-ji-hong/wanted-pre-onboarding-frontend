@@ -4,11 +4,14 @@ import {Box,Link,Grid,Container,CssBaseline} from '@mui/material';
 
 import MemberForm from '../UI/MemberForm';
 import CustomButton from '../UI/CustomButton';
+import NaverLogin from '../NaverLogin';
+import KakaoLogin from '../KakaoLogin';
 
 const SignIn = () => {
   const [errors, setErrors] = useState({ id: '', password: '' });
   const [inputs, setInputs] = useState({ id: '', password: '' });
-
+  const [userInfo, setUserInfo] = useState(null);
+  const [getToken, setGetToken] = useState(null);
   console.log(inputs)
 
   const inputFields = [
@@ -52,11 +55,23 @@ const SignIn = () => {
         disabled={errors.id === '' && errors.password === '' && inputs.email !== '' && inputs.password !== '' ? false : true}
         />
           <Grid container>
-            <Grid item>
+            <Grid item xs={12}>
               <Link href="/signup" variant="body2">
                 {"회원 가입을 진행하시겠어요?"}
               </Link>
-            </Grid>
+            </Grid><br/><br/><br/>
+            <Grid item xs={4}>
+            <img alt="구글로그인" src={`./google.png`} style={{ height: '48px' }} />
+          </Grid>
+          <Grid item xs={4}>
+            <NaverLogin
+              userInfo={userInfo}
+              setUserInfo={setUserInfo}
+              setGetToken={setGetToken} />
+          </Grid>
+          <Grid item xs={4}>
+            <KakaoLogin />
+          </Grid>
           </Grid>
       </Box>
     </Container>
